@@ -41,10 +41,11 @@ namespace LavaTubes
             }
         }
 
-        //input validation
+        //Input validation
         //Checks if each character is an integer between 0 and 9, and the are the same amount of integers in each row.
         //Informs the user if the input is not valid.
-        //Also populates the Map
+        //Also populates the Map.
+        //Returns true if the input is valid.
         public bool ValidateInput() 
         {
             _map.Clear();
@@ -98,8 +99,8 @@ namespace LavaTubes
             return _valid;
         }
 
-        //Checks each adjacent coordinate.
-        //Creates the solution string.
+        //Checks each adjacent coordinate. If all of them are higher than the examined coordinate (number of adjacent = number of higher), its a lowpoint.
+        //Creates the solution string and puts it into the output field of the GUI.
         public void Solve()
         {
             
