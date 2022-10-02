@@ -37,7 +37,11 @@ namespace LavaTubes
         {
             if (ValidateInput() == true)
             {
-                Solve();
+                FindLowPoints();
+                SizeOfThreeLargest();
+
+                TxtSolution.Text = _solution;
+
             }
         }
 
@@ -101,10 +105,10 @@ namespace LavaTubes
 
         //Checks each adjacent coordinate. If all of them are higher than the examined coordinate (number of adjacent = number of higher), its a lowpoint.
         //Creates the solution string and puts it into the output field of the GUI.
-        public void Solve()
+        public void FindLowPoints()
         {
-            
-            _solution = "The lowpoints are: \n";
+            TxtSolution.Text = "";
+           _solution = "The lowpoints are: \n";
             _riskFactor = 0;
             int numOfAdjacent = 0;
             int numOfHigher = 0;
@@ -114,12 +118,12 @@ namespace LavaTubes
 
                 for (int l = 0; l < _columnNumber; l++)
                 {
-                     numOfAdjacent = 0;
-                     numOfHigher = 0;
+                    numOfAdjacent = 0;
+                    numOfHigher = 0;
 
                     Coordinate coordinate = _map.FirstOrDefault(c => c.x == k && c.y == l);
 
-                    Coordinate coordinateUp = _map.FirstOrDefault(c => c.x == k-1 && c.y == l);
+                    Coordinate coordinateUp = _map.FirstOrDefault(c => c.x == k - 1 && c.y == l);
                     if (coordinateUp != null)
                     {
                         numOfAdjacent += 1;
@@ -129,7 +133,7 @@ namespace LavaTubes
                             numOfHigher += 1;
                         }
                     }
-                    Coordinate coordinateDown = _map.FirstOrDefault(c => c.x == k+1 && c.y == l);
+                    Coordinate coordinateDown = _map.FirstOrDefault(c => c.x == k + 1 && c.y == l);
                     if (coordinateDown != null)
                     {
                         numOfAdjacent += 1;
@@ -138,7 +142,7 @@ namespace LavaTubes
                             numOfHigher += 1;
                         }
                     }
-                    Coordinate coordinateLeft = _map.FirstOrDefault(c => c.x == k && c.y == l-1);
+                    Coordinate coordinateLeft = _map.FirstOrDefault(c => c.x == k && c.y == l - 1);
                     if (coordinateLeft != null)
                     {
                         numOfAdjacent += 1;
@@ -147,7 +151,7 @@ namespace LavaTubes
                             numOfHigher += 1;
                         }
                     }
-                    Coordinate coordinateRight = _map.FirstOrDefault(c => c.x == k && c.y == l+1);
+                    Coordinate coordinateRight = _map.FirstOrDefault(c => c.x == k && c.y == l + 1);
                     if (coordinateRight != null)
                     {
                         numOfAdjacent += 1;
@@ -157,18 +161,39 @@ namespace LavaTubes
                         }
                     }
 
+                    //if all adjacent coordinate is higher then mark it as lowpoint. Mark every adjacent as Basin of this.
                     if (numOfHigher == numOfAdjacent)
                     {
-                        _solution += "Row " + (k + 1).ToString() + "., column " + (l + 1).ToString() + ". Value: " + coordinate.height.ToString() + "\n";
+
+
+                        coordinate.isLowpoint = true;
+                        if (coordinateDown != null && coordinateDown.height != 9) { coordinateDown.BasinOf = coordinate; }
+                        if (coordinateUp != null && coordinateUp.height != 9) { coordinateUp.BasinOf = coordinate; }
+                        if (coordinateLeft != null && coordinateLeft.height != 9) { coordinateLeft.BasinOf = coordinate; }
+                        if (coordinateRight != null && coordinateRight.height != 9) { coordinateRight.BasinOf = coordinate; }
+                        coordinate.BasinOf = coordinate;
+                        coordinate.sizeOfBazin += 1;
+
+                        coordinate.CalculatBasin(_map);
+
+                        _solution += "Row " + (k + 1).ToString() + "., column " + (l + 1).ToString() + ". Value: " + coordinate.height.ToString() + "., SizeOfBasin: " + coordinate.sizeOfBazin.ToString() + "\n";
                         _riskFactor += (coordinate.height + 1);
+
                     }
-                    
                 }
             }
-            TxtSolution.Text = _solution + "\nRisk level of the area = " + _riskFactor;
+
+            _solution += "\nRisk level of the area = " + _riskFactor +"\n";
         }
 
-        //Default test cases in a combobox
+        public void SizeOfThreeLargest()
+        {
+            List<Coordinate> SortedList = _map.OrderByDescending(o => o.sizeOfBazin).ToList();
+
+            _solution += "A Legnagyobb három szorzata: " + (SortedList.ElementAt(0).sizeOfBazin * SortedList.ElementAt(1).sizeOfBazin * SortedList.ElementAt(2).sizeOfBazin).ToString();
+           
+        }
+            //Default test cases in a combobox
         private void comboTest_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboTest.Text == "Main case")
@@ -179,13 +204,17 @@ namespace LavaTubes
                                 "8767896789\n" +
                                 "9899965678";
             }
-            else if (comboTest.Text == "Nontrivial case")
+            else if (comboTest.Text == "Nontrivial case (same number)")
             {
                 TxtInput.Text = "5555555555\n" +
                                 "5555555555\n" +
                                 "5555555555\n" +
                                 "5555555555\n" +
                                 "5555555555";
+            }
+            else if (comboTest.Text == "Nontrivial case (one line)")
+            {
+                TxtInput.Text = "128930929139796928979549";
             }
             else if (comboTest.Text == "Simple case")
             {
