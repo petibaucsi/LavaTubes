@@ -46,7 +46,7 @@ namespace LavaTubes
             // 
             this.TxtInput.Location = new System.Drawing.Point(96, 193);
             this.TxtInput.Name = "TxtInput";
-            this.TxtInput.Size = new System.Drawing.Size(550, 154);
+            this.TxtInput.Size = new System.Drawing.Size(814, 154);
             this.TxtInput.TabIndex = 0;
             this.TxtInput.Text = "";
             // 
@@ -70,7 +70,7 @@ namespace LavaTubes
             // 
             // BtnSolve
             // 
-            this.BtnSolve.Location = new System.Drawing.Point(661, 227);
+            this.BtnSolve.Location = new System.Drawing.Point(935, 223);
             this.BtnSolve.Name = "BtnSolve";
             this.BtnSolve.Size = new System.Drawing.Size(270, 87);
             this.BtnSolve.TabIndex = 4;
@@ -83,7 +83,7 @@ namespace LavaTubes
             this.TxtSolution.Location = new System.Drawing.Point(96, 384);
             this.TxtSolution.Name = "TxtSolution";
             this.TxtSolution.ReadOnly = true;
-            this.TxtSolution.Size = new System.Drawing.Size(550, 155);
+            this.TxtSolution.Size = new System.Drawing.Size(814, 155);
             this.TxtSolution.TabIndex = 5;
             this.TxtSolution.Text = "";
             // 
@@ -101,7 +101,7 @@ namespace LavaTubes
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(661, 447);
+            this.label4.Location = new System.Drawing.Point(935, 447);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 15);
             this.label4.TabIndex = 7;
@@ -112,12 +112,13 @@ namespace LavaTubes
             this.comboTest.FormattingEnabled = true;
             this.comboTest.Items.AddRange(new object[] {
             "Main case",
+            "Puzzle input",
             "Simple case",
             "Nontrivial case (same number)",
             "Nontrivial case (one line)",
             "Error case (letter)",
             "Error case (different length)"});
-            this.comboTest.Location = new System.Drawing.Point(729, 439);
+            this.comboTest.Location = new System.Drawing.Point(1003, 444);
             this.comboTest.Name = "comboTest";
             this.comboTest.Size = new System.Drawing.Size(202, 23);
             this.comboTest.TabIndex = 8;
@@ -136,7 +137,7 @@ namespace LavaTubes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1122, 571);
+            this.ClientSize = new System.Drawing.Size(1432, 571);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.comboTest);
             this.Controls.Add(this.label4);
