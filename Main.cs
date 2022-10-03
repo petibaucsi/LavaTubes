@@ -12,14 +12,14 @@ namespace LavaTubes
 {
     public partial class Main : Form
     {
-        String _input;
-        String _solution;
+        String input;
+        String solution;
 
-        int _rowNumber = 0;
-        int _columnNumber = 0;
-        int _riskFactor = 0;
+        int rowNumber = 0;
+        int columnNumber = 0;
+        int riskFactor = 0;
         
-        List<Coordinate> _map = new List<Coordinate>();
+        List<Coordinate> map = new List<Coordinate>();
         
         //At start we put the Main case in the input field
         public Main()
@@ -40,7 +40,7 @@ namespace LavaTubes
                 FindLowPoints();
                 SizeOfThreeLargest();
 
-                TxtSolution.Text = _solution;
+                TxtSolution.Text = solution;
 
             }
         }
@@ -52,36 +52,36 @@ namespace LavaTubes
         //Returns true if the input is valid.
         public bool ValidateInput() 
         {
-            _map.Clear();
+            map.Clear();
             TxtSolution.Text = "";
-            _input = TxtInput.Text;
-            int _mapWidth = 0;
-            bool _valid = true;
-            string[] rows = _input.Split("\n");
-            _rowNumber = rows.Length;
+            input = TxtInput.Text;
+            int mapWidth = 0;
+            bool valid = true;
+            string[] rows = input.Split("\n");
+            rowNumber = rows.Length;
 
 
             for (int i = 0; i < rows.Length; i++)
             {
-                if (_valid == false)
+                if (valid == false)
                 {
                     break;
                 }
 
                 char[] columns = rows[i].Trim().ToCharArray();
 
-                _columnNumber = columns.Length;
+                columnNumber = columns.Length;
 
                 if (i == 0)
                 {
-                    _mapWidth = columns.Length;
+                    mapWidth = columns.Length;
                 }
                 else
                 {
-                    if (_mapWidth != columns.Length)
+                    if (mapWidth != columns.Length)
                     {
                         MessageBox.Show("Input must be the same amount of integers in each row!");
-                        _valid = false;
+                        valid = false;
                         break;
                     }
                 }
@@ -90,40 +90,41 @@ namespace LavaTubes
                 {
                     try
                     {
-                        _map.Add(new Coordinate(i, j, Int32.Parse(columns[j].ToString())));
+                        map.Add(new Coordinate(i, j, Int32.Parse(columns[j].ToString())));
                     }
                     catch (Exception)
                     {
                         MessageBox.Show("Input must be integers between 0 and 9!");
-                        _valid = false;
+                        valid = false;
                         break;
                     }
                 }
             }
-            return _valid;
+            return valid;
         }
 
         //Checks each adjacent coordinate. If all of them are higher than the examined coordinate (number of adjacent = number of higher), its a lowpoint.
+        //If it is a lowpoint, mark every adjacent as Basin of this. Maintain the size of the basin.
         //Creates the solution string and puts it into the output field of the GUI.
         public void FindLowPoints()
         {
             TxtSolution.Text = "";
-           _solution = "The lowpoints are: \n";
-            _riskFactor = 0;
+           solution = "The lowpoints are: \n";
+            riskFactor = 0;
             int numOfAdjacent = 0;
             int numOfHigher = 0;
 
-            for (int k = 0; k < _rowNumber; k++)
+            for (int k = 0; k < rowNumber; k++)
             {
 
-                for (int l = 0; l < _columnNumber; l++)
+                for (int l = 0; l < columnNumber; l++)
                 {
                     numOfAdjacent = 0;
                     numOfHigher = 0;
 
-                    Coordinate coordinate = _map.FirstOrDefault(c => c.x == k && c.y == l);
+                    Coordinate coordinate = map.FirstOrDefault(c => c.x == k && c.y == l);
 
-                    Coordinate coordinateUp = _map.FirstOrDefault(c => c.x == k - 1 && c.y == l);
+                    Coordinate coordinateUp = map.FirstOrDefault(c => c.x == k - 1 && c.y == l);
                     if (coordinateUp != null)
                     {
                         numOfAdjacent += 1;
@@ -133,7 +134,7 @@ namespace LavaTubes
                             numOfHigher += 1;
                         }
                     }
-                    Coordinate coordinateDown = _map.FirstOrDefault(c => c.x == k + 1 && c.y == l);
+                    Coordinate coordinateDown = map.FirstOrDefault(c => c.x == k + 1 && c.y == l);
                     if (coordinateDown != null)
                     {
                         numOfAdjacent += 1;
@@ -142,7 +143,7 @@ namespace LavaTubes
                             numOfHigher += 1;
                         }
                     }
-                    Coordinate coordinateLeft = _map.FirstOrDefault(c => c.x == k && c.y == l - 1);
+                    Coordinate coordinateLeft = map.FirstOrDefault(c => c.x == k && c.y == l - 1);
                     if (coordinateLeft != null)
                     {
                         numOfAdjacent += 1;
@@ -151,7 +152,7 @@ namespace LavaTubes
                             numOfHigher += 1;
                         }
                     }
-                    Coordinate coordinateRight = _map.FirstOrDefault(c => c.x == k && c.y == l + 1);
+                    Coordinate coordinateRight = map.FirstOrDefault(c => c.x == k && c.y == l + 1);
                     if (coordinateRight != null)
                     {
                         numOfAdjacent += 1;
@@ -161,7 +162,7 @@ namespace LavaTubes
                         }
                     }
 
-                    //if all adjacent coordinate is higher then mark it as lowpoint. Mark every adjacent as Basin of this.
+                    //if all adjacent coordinate is higher then mark it as lowpoint. Marks every adjacent as Basin of this.
                     if (numOfHigher == numOfAdjacent)
                     {
 
@@ -174,26 +175,28 @@ namespace LavaTubes
                         coordinate.BasinOf = coordinate;
                         coordinate.sizeOfBazin += 1;
 
-                        coordinate.CalculatBasin(_map);
+                        coordinate.CalculatBasin(map);
 
-                        _solution += "Row " + (k + 1).ToString() + "., column " + (l + 1).ToString() + ". Value: " + coordinate.height.ToString() + "., SizeOfBasin: " + coordinate.sizeOfBazin.ToString() + "\n";
-                        _riskFactor += (coordinate.height + 1);
+                        solution += "Row " + (k + 1).ToString() + "., column " + (l + 1).ToString() + ". Value: " + coordinate.height.ToString() + "., SizeOfBasin: " + coordinate.sizeOfBazin.ToString() + "\n";
+                        riskFactor += (coordinate.height + 1);
 
                     }
                 }
             }
 
-            _solution += "\nRisk level of the area = " + _riskFactor +"\n";
+            solution += "\nRisk level of the area = " + riskFactor +"\n";
         }
 
+        //Calculates the multiplied value. Sorts the map by the size of its basin, then multiplies the first three
         public void SizeOfThreeLargest()
         {
-            List<Coordinate> SortedList = _map.OrderByDescending(o => o.sizeOfBazin).ToList();
+            List<Coordinate> SortedList = map.OrderByDescending(o => o.sizeOfBazin).ToList();
 
-            _solution += "A Legnagyobb három szorzata: " + (SortedList.ElementAt(0).sizeOfBazin * SortedList.ElementAt(1).sizeOfBazin * SortedList.ElementAt(2).sizeOfBazin).ToString();
+            solution += "Multiplied value of the the three largest basin: " + (SortedList.ElementAt(0).sizeOfBazin * SortedList.ElementAt(1).sizeOfBazin * SortedList.ElementAt(2).sizeOfBazin).ToString();
            
         }
-            //Default test cases in a combobox
+        
+        //Default test cases in a combobox
         private void comboTest_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboTest.Text == "Main case")
@@ -214,7 +217,7 @@ namespace LavaTubes
             }
             else if (comboTest.Text == "Nontrivial case (one line)")
             {
-                TxtInput.Text = "128930929139796928979549";
+                TxtInput.Text = "1235953124987654";
             }
             else if (comboTest.Text == "Simple case")
             {

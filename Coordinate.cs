@@ -18,8 +18,6 @@ namespace LavaTubes
         public int sizeOfBazin { get; set; } = 0;
         public bool CheckedAsBazin { get; set; } = false;
 
-        //isLowpoint, BasinOf, sizeOfBazin
-
         public Coordinate(int x, int y, int height) 
         {
             this.x = x;
@@ -27,21 +25,24 @@ namespace LavaTubes
             this.height = height;
         }
 
+        //Calculates the whole basin of a lowpoint.
+        //Chesks each coordinate of the current basin, and marks them as checked when finished. (CheckedAsBazin)
+        //Extends the basin if needed. (newbasin)
+        //Maintains the size of the basin.
         public void CalculatBasin(List<Coordinate> _map)
         {
             if (this.isLowpoint == true)
             {
                 bool hasMoreBasin = false;
-                //List<Coordinate> _basin = _map.SkipWhile(o => o.BasinOf == this && o.CheckedAsBazin == false && o.isLowpoint == false ).ToList();
-                //List<Coordinate> _basin = _map.SkipWhile(o => o.BasinOf == this && o.CheckedAsBazin == false && o.isLowpoint == false).ToList();
+
                 List<Coordinate> _basin = new List<Coordinate>();
                 List<Coordinate> _newBasin = new List<Coordinate>();
 
-                foreach (Coordinate _c in _map)
+                foreach (Coordinate coordinate in _map)
                 {
-                    if (_c.isLowpoint == false && _c.BasinOf == this)
+                    if (coordinate.isLowpoint == false && coordinate.BasinOf == this)
                     {
-                        _basin.Add(_c);
+                        _basin.Add(coordinate);
                     }
                 }
 
@@ -51,25 +52,16 @@ namespace LavaTubes
                     hasMoreBasin = true;
                 }
 
-                //List<SomeObject> closed = objectList.SkipWhile(o => !o.Status.Equals("Closed")).ToList();
                 while (hasMoreBasin == true)
                 {
                     
-                    //foreach (Coordinate _c in _map)
-                    //{
-                    //    if (_c.isLowpoint == false && _c.BasinOf == this && _c.CheckedAsBazin == false)
-                    //    {
-                    //        _basin.Add(_c);
-                    //    }
-                    //}
-
-                    foreach (Coordinate _c in _basin)
+                    foreach (Coordinate coordinate in _basin)
                     {
 
-                        Coordinate coordinateUp = _map.FirstOrDefault(c => c.x == _c.x - 1 && c.y == _c.y && c.CheckedAsBazin == false);
+                        Coordinate coordinateUp = _map.FirstOrDefault(c => c.x == coordinate.x - 1 && c.y == coordinate.y && c.CheckedAsBazin == false);
                         if (coordinateUp != null)
                         {
-                            if (coordinateUp.height != 9 && _c.height < coordinateUp.height)
+                            if (coordinateUp.height != 9 && coordinate.height < coordinateUp.height)
                             {
                                 if (coordinateUp.BasinOf == null)
                                 {
@@ -80,10 +72,10 @@ namespace LavaTubes
 
                             }
                         }
-                        Coordinate coordinateDown = _map.FirstOrDefault(c => c.x == _c.x + 1 && c.y == _c.y && c.CheckedAsBazin == false);
+                        Coordinate coordinateDown = _map.FirstOrDefault(c => c.x == coordinate.x + 1 && c.y == coordinate.y && c.CheckedAsBazin == false);
                         if (coordinateDown != null)
                         {
-                            if (coordinateDown.height != 9 && _c.height < coordinateDown.height)
+                            if (coordinateDown.height != 9 && coordinate.height < coordinateDown.height)
                             {
                                 if (coordinateDown.BasinOf == null)
                                 {
@@ -94,10 +86,10 @@ namespace LavaTubes
 
                             }
                         }
-                        Coordinate coordinateLeft = _map.FirstOrDefault(c => c.x == _c.x && c.y == _c.y - 1 && c.CheckedAsBazin == false);
+                        Coordinate coordinateLeft = _map.FirstOrDefault(c => c.x == coordinate.x && c.y == coordinate.y - 1 && c.CheckedAsBazin == false);
                         if (coordinateLeft != null)
                         {
-                            if (coordinateLeft.height != 9 && _c.height < coordinateLeft.height)
+                            if (coordinateLeft.height != 9 && coordinate.height < coordinateLeft.height)
                             {
                                 if (coordinateLeft.BasinOf == null)
                                 {
@@ -107,10 +99,10 @@ namespace LavaTubes
                                 _newBasin.Add(coordinateLeft);
                             }
                         }
-                        Coordinate coordinateRight = _map.FirstOrDefault(c => c.x == _c.x && c.y == _c.y + 1 && c.CheckedAsBazin == false);
+                        Coordinate coordinateRight = _map.FirstOrDefault(c => c.x == coordinate.x && c.y == coordinate.y + 1 && c.CheckedAsBazin == false);
                         if (coordinateRight != null)
                         {
-                            if (coordinateRight.height != 9 && _c.height < coordinateRight.height)
+                            if (coordinateRight.height != 9 && coordinate.height < coordinateRight.height)
                             {
                                 if (coordinateRight.BasinOf == null)
                                 {
@@ -120,9 +112,9 @@ namespace LavaTubes
                                 _newBasin.Add(coordinateRight);
                             }
                         }
-                        _c.CheckedAsBazin = true;
-                        //_basin.Remove(this);
+                        coordinate.CheckedAsBazin = true;
                     }
+
                     hasMoreBasin = _newBasin.Count > 0 ? true : false;
 
                     if (hasMoreBasin)
